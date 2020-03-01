@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 
+import javax.lang.model.element.Name;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -25,7 +26,15 @@ public class Names {
      */
     @Test
     void task1() {
-        long count = 0; // TODO Napisz implementację
+        long count = names.stream()
+                .filter(nameInfo -> nameInfo.getSex().equals("K"))
+                .filter(nameInfo -> !nameInfo.getName().endsWith("A"))
+                .map(nameInfo -> nameInfo.getName())
+                .distinct()
+                .count();
+
+
+        // TODO Napisz implementację
 
         System.out.println("Ilość imion żeńskich nie kończących się na 'a':");
         System.out.println(count);
@@ -38,7 +47,12 @@ public class Names {
      */
     @Test
     void task2() {
-        int sum = 0; // TODO Napisz implementację
+        int sum = names.stream()
+                .filter(nameInfo -> nameInfo.getName().equals("JAN"))
+                .mapToInt(names -> names.getCount())
+                .sum();
+
+        // TODO Napisz implementację
 
         System.out.println("Liczba nadanych imion 'Jan':");
         System.out.println(sum);
@@ -51,7 +65,11 @@ public class Names {
      */
     @Test
     void task3() {
-        IntSummaryStatistics statistics = new IntSummaryStatistics(); // TODO Napisz implementację
+        IntSummaryStatistics statistics = names.stream()
+                .filter(nameInfo -> nameInfo.getName().equals("POLA"))
+                .mapToInt(names -> names.getCount())
+                .summaryStatistics();
+        // TODO Napisz implementację
 
         int min = statistics.getMin();
         int max = statistics.getMax();
@@ -73,7 +91,12 @@ public class Names {
      */
     @Test
     void task4() {
-        String mostPopular2019 = ""; // TODO Napisz implementację
+        String mostPopular2019 = names.stream()
+                .filter(nameInfo -> nameInfo.getYear() == 2019)
+                .filter(nameInfo -> nameInfo.getSex().equals("K"))
+                .limit(5)
+                .map(nameInfo -> nameInfo.getName())
+                .collect(Collectors.joining(", "));
 
         System.out.println("Najpopularniejsze imiona żeńskie w 2019 roku:");
         System.out.println(mostPopular2019);
@@ -86,7 +109,14 @@ public class Names {
      */
     @Test
     void task5() {
-        List<String> longestNames = Collections.emptyList(); // TODO Napisz implementację
+        List<String> longestNames = names.stream()
+                .map(nameInfo -> nameInfo.getName())
+                .sorted((a,b) -> b.length() - a.length())
+                .distinct()
+                .limit(4)
+                .collect(Collectors.toList());
+
+        // TODO Napisz implementację
 
         System.out.println("Najdłuższe imiona:");
         System.out.println(longestNames);

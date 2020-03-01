@@ -49,7 +49,18 @@ public class BikeRentals {
      */
     @Test
     void task1() {
-        Map<Integer, Integer> rentalsByStation = Collections.emptyMap(); // TODO Napisz implementację
+
+        Map<Integer, List<BikeRental>> byStartStation= rentals.stream()
+                .collect(Collectors.groupingBy(bikeRental -> bikeRental.getStartStationCode()));
+
+        Map<Integer, Integer> rentalsByStation = byStartStation.entrySet().stream()
+                .sorted((a,b) -> b.getValue().size() - a.getValue().size())
+                .limit(3)
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue().size()
+                ));
+
 
         System.out.println("Najpopularniejsze stacje:");
         rentalsByStation.forEach((key, value) -> System.out.println("Stacja " + key + ": " + value + " wypożyczeń"));
