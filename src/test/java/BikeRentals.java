@@ -52,6 +52,7 @@ public class BikeRentals {
 
         Map<Integer, List<BikeRental>> byStartStation= rentals.stream()
                 .collect(Collectors.groupingBy(bikeRental -> bikeRental.getStartStationCode()));
+        //zamienine mozna stosowac bikeRental:getStartStationCode
 
         Map<Integer, Integer> rentalsByStation = byStartStation.entrySet().stream()
                 .sorted((a,b) -> b.getValue().size() - a.getValue().size())
@@ -75,7 +76,26 @@ public class BikeRentals {
      */
     @Test
     void task2() {
-        double totalDistanceMeters = 0; // TODO Napisz implementację
+        Map<Integer, List<BikeStation>> byStartStation = stations.stream()
+                .collect(Collectors.groupingBy(BikeStation::getCode));
+
+        Map<Integer, BikeStation> stationsByCode = byStartStation.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        e -> e.getValue().get(0)
+                ));
+
+        double totalDistanceMeters = rentals.stream()
+                .filter(rental -> stationsByCode.containsKey(rental.getStartStationCode()))
+                .filter(rental -> stationsByCode.containsKey(rental.getEndStationCode()))
+                .mapToDouble(rental -> distance(
+                        stationsByCode.get(rental.getStartStationCode()).getLatitude(),
+                        stationsByCode.get(rental.getStartStationCode()).getLongitude(),
+                        stationsByCode.get(rental.getEndStationCode()).getLatitude(),
+                        stationsByCode.get(rental.getEndStationCode()).getLongitude()
+                ))
+                .sum();
+// TODO Napisz implementację
 
         long totalDistanceKM = Math.round(totalDistanceMeters / 1000);
 
@@ -90,13 +110,15 @@ public class BikeRentals {
      */
     @Test
     void task3() {
-        Map<Integer, Integer> rentalsByStation = Collections.emptyMap(); // TODO Napisz implementację
+        Map<Integer, Long> rentalsByStation = rentals.stream()
+                .collect(Collectors.groupingBy(rental -> rental.getStartStationCode(), Collectors.counting()));
+        // TODO Napisz implementację
 
         System.out.println("Wypożyczenia wg stacji:");
         rentalsByStation.forEach((key, value) -> System.out.println(key + ": " + value + " wypożyczeń"));
 
         assertEquals(615, rentalsByStation.size());
-        assertEquals(2469, rentalsByStation.get(6145));
+        assertEquals(2470, rentalsByStation.get(6145));
     }
 
     /**
